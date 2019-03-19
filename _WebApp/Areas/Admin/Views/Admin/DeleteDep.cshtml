@@ -1,0 +1,50 @@
+﻿@model Client.Models.Departement
+
+@{
+    ViewBag.Title = "DeleteDep";
+}
+
+<h2>DeleteDep</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Departement</h4>
+    <hr />
+    <dl class="dl-horizontal">
+      
+        <dt>
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Admin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Admin)
+        </dd>
+
+    </dl>
+
+        @{ int ID = (int) Model.Id; }
+        
+        
+        <div class="form-actions no-color">
+            @Html.ActionLink("Delete", "DeleteDep2", "Admin", new { id = ID }, new { @class = "btn btn-danger" })
+        </div>
+    
+</div>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>

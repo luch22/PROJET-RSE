@@ -1,0 +1,139 @@
+﻿@model _WebApp.Models.ViewModels.MemberTacheEquipe
+
+@{
+    ViewBag.Title = "TacheEquipe";
+}
+
+<h2>Tâche Équipe</h2>
+
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(Model => Model.te.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.te.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.te.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.te.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.te.Debut)
+        </dt>
+
+        <dd>
+            @Model.te.Debut.ToShortDateString()
+        </dd>
+
+        @if (Model.te.Fin != null)
+        { 
+            <dt>
+                @Html.DisplayNameFor(model => model.te.Fin)
+            </dt>
+
+            <dd>
+                @{ var datefin = Model.te.Fin != null ? ((DateTime) Model.te.Fin).ToShortDateString() : "";}
+                @datefin
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.te.Final)
+        </dt>
+
+        <dd>
+            @{ var datefinal = Model.te.Final != null ? ((DateTime)Model.te.Final).ToShortDateString() : "";}
+            @datefinal
+        </dd>
+    </dl>
+</div>
+<div class="list-group">
+    <h2>Sujet(s) de la tâche</h2>
+    <p>
+        @Html.ActionLink("Nouveau sujet", "CreateSujetTache", "Message", new { id = Model.te.Id }, new { @class = "btn btn-success" })
+    </p>
+    <table class="table hovercolorgreen">
+        <tr class="success">
+            <th>
+                @Html.DisplayNameFor(model => model.mt.Titre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.mt.Auteur)
+            </th>
+        </tr>
+        @foreach (var item in Model.ListM)
+        {
+            <tr onclick="location.href='@Url.Action("MessageTacheEquipe", "Message", new { id = item.Id }, null)'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Titre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Auteur)
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<div class="list-group">
+    <h2 class="menumilieu">Document(s)</h2>
+    <p>
+        @Html.ActionLink("Upload Document", "Upload", "FileManager", new { type = "tacheeq", id = Model.te.Id }, new { @class = "btn btn-warning" })
+    </p>
+    <table class="table hovercoloryellow">
+        <tr class="warning">
+            <th>
+                @Html.DisplayNameFor(model => model.doc.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.doc.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.doc.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.doc.Taille)
+            </th>
+        </tr>
+
+        @foreach (var item in Model.ListD)
+        {
+            <tr onclick="location.href='@Url.Action("Download", "FileManager", new { id = item.Id }, null)'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @if (item.Taille < 1024)
+                    {
+                        var taille = (float)item.Taille / 1024;
+                        var text = taille.ToString("0.00") + " Ko";
+                        @text
+                    }
+                    else
+                    {
+                        var taille = (float)item.Taille / (1024 * 1024);
+                        var text = taille.ToString("0.00") + " Mo";
+                        @text
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<a onclick="window.history.go(-1)" class="btn btn-danger">Retour</a>

@@ -1,0 +1,63 @@
+﻿@model _WebApp.Areas.Admin.Models.ViewModels.AdminEquipe
+
+@{
+    ViewBag.Title = "Equipe";
+}
+
+<h2>Équipe(s)</h2>
+
+<p>
+    @Html.ActionLink("Nouvelle équipe", "CreateEquipe", null, new { @class = "btn btn-info" })
+</p>
+
+<div class="list-group">
+    <table class="table hovercolorblue">
+        <tr class="info">
+            <th>
+                @Html.DisplayNameFor(model => model.eq.Nom)
+            </th>
+            <th>
+                Date de création
+            </th>
+            <th>
+                Employé(s)
+            </th>
+            <th>
+                Projet
+            </th>
+        </tr>
+        @if (Model.ListEqEmp != null && Model.ListEqEmp.Any()) {
+            foreach (var item in Model.ListEqEmp) {
+                <tr onclick="location.href='@Url.Action("DetailsEquipe", new { id = item.Key.Id })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Key.Nom)
+                    </td>
+                    <td>
+                        @item.Key.Creee.ToShortDateString()
+                    </td>
+                    <td>
+                        @if (item.Key != null && item.Value != null) {
+                            foreach (var item2 in item.Value) {
+                                if (item2 != null) {
+                                    if (Model.ListChef[item.Key].Id == item2.Id) {
+                                        <img src="~/Content/mon.png" class="leboss2"/> @Html.ActionLink((item2.Nom + " " + item2.Prenom), "DetailsEmployee", "Employee", new { id = item2.Id }, new { @class = "leboss" })<br>
+                                    }
+                                    else { 
+                                        @Html.ActionLink((item2.Nom + " " + item2.Prenom), "DetailsEmployee", "Employee", new { id = item2.Id }, null)<br>
+                                    }
+
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.Key.Projet+"", "DetailsProjet", "Projet", new { id = item.Key.Projet, area = "Admin"}, null)
+                    </td>
+                </tr>
+            }
+        }
+
+    </table>
+</div>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>

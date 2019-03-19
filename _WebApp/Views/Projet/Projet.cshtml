@@ -1,0 +1,254 @@
+﻿@model _WebApp.Models.ViewModels.MemberProjet
+
+@{
+    ViewBag.Title = "Projet";
+}
+
+<div class="detproj">
+    <h2>Détails du Projet</h2>
+
+    @if (Model.p != null && Model.chef != null) {
+        <div>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.p.Nom)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.p.Nom)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.p.Description)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.p.Description)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.p.Debut)
+                </dt>
+
+                <dd>
+                    @Model.p.Debut.ToShortDateString()
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.p.Fin)
+                </dt>
+
+                <dd>
+                    @{var dateFin = Model.p.Fin != null ? ((DateTime)Model.p.Fin).ToShortDateString() : "";}
+                    @dateFin
+                </dd>
+
+                <dt>
+                    Chef de Projet
+                </dt>
+
+                <dd id="lienEmp" onclick="location.href='@Url.Action("Employee","Member", new { id = Model.chef.Id })'">
+                    @Html.DisplayFor(model => model.chef.Nom) @Html.DisplayFor(model => model.chef.Prenom)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="list-group">
+            <h2>Équipe(s) du projet</h2>
+            <table class="table hovercolorblue">
+                <tr class="info">
+                    <th>
+                        @Html.DisplayNameFor(model => model.eq.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.eq.Creee)
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.Equipes) {
+                    <tr onclick="location.href='@Url.Action("Equipe", "Equipe", new { id = item.Id })'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @item.Creee.ToShortDateString()
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div class="list-group">
+            <h2>Tache(s) employé</h2>
+            <table class="table hovercolorblue">
+                <tr class="info">
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Debut)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Fin)
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.TacheEmployees) {
+                    <tr onclick="location.href='@Url.Action("TacheEmployee", "Tache", new { id = item.Id })'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @item.Debut.ToShortDateString()
+                        </td>
+                        <td>
+                            @{var dateFin2 = item.Fin != null ? ((DateTime)item.Fin).ToShortDateString() : "";}
+                            @dateFin2
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div class="list-group">
+            <h2>Tache(s) équipe</h2>
+            <table class="table hovercolorblue">
+                <tr class="info">
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Debut)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.t.Fin)
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.TacheEquipes) {
+                    <tr onclick="location.href='@Url.Action("TacheEquipe", "Tache", new { id = item.Id })'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @item.Debut.ToShortDateString()
+                        </td>
+                        <td>
+                            @{var dateFin3 = item.Fin != null ? ((DateTime)item.Fin).ToShortDateString() : "";}
+                            @dateFin3
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div class="list-group">
+            <h2>Sujet(s) du projet</h2>
+            <p>
+                @Html.ActionLink("Nouveau sujet", "CreateSujetProjet", "Message", new { id = Model.p.Id }, new { @class = "btn btn-success" })
+            </p>
+            <table class="table hovercolorgreen">
+                <tr class="success">
+                    <th>
+                        @Html.DisplayNameFor(model => model.mp.Titre)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.mp.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.mp.Contenu)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.mp.Auteur)
+                    </th>
+                </tr>
+                @foreach (var item in Model.MessageProjets) {
+                    <tr onclick="location.href='@Url.Action("MessageProjet", "Message", new { id = item.Id }, null)'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Titre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Contenu)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Auteur)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        
+        <div class="list-group">
+            <h2 class="menumilieu">Document(s)</h2>
+            <p>
+                @Html.ActionLink("Upload Document", "Upload", "FileManager", new { type = "projet", id = Model.p.Id}, new { @class = "btn btn-warning" })
+            </p>
+            <table class="table hovercoloryellow">
+                <tr class="warning">
+                    <th>
+                        @Html.DisplayNameFor(model => model.d.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.d.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.d.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.d.Taille)
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.Documents) {
+                    <tr onclick="location.href='@Url.Action("Download", "FileManager", new { id = item.Id }, null)'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @if (item.Taille < 1024) {
+                                var taille = (float)item.Taille / 1024;
+                                var text = taille.ToString("0.00") + " Ko";
+                                @text
+                            }
+                            else {
+                                var taille = (float)item.Taille / (1024 * 1024);
+                                var text = taille.ToString("0.00") + " Mo";
+                                @text
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    }
+
+    else {
+        <p>Vous n'êtes actuellement affecter à aucun projet</p>
+    }
+</div>

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Client.Models.Projet>
+
+@{
+    ViewBag.Title = "Projet";
+}
+
+<h2>Projet(s)</h2>
+
+<p>
+    @Html.ActionLink("Nouveau projet", "CreateProjet", null, new { @class = "btn btn-info" })
+</p>
+<table class="table hovercolorblue">
+    <tr class="info">
+        <th>
+            @Html.DisplayNameFor(model => model.Nom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Debut)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Fin)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Admin)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr onclick="location.href='@Url.Action("DetailsProjet", "Projet", new { id = item.Id, area = "Admin" })'">
+        <td>
+            @Html.DisplayFor(modelItem => item.Nom)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @item.Debut.ToShortDateString()
+        </td>
+        <td>
+            @{var dateFin = item.Fin != null ? ((DateTime)item.Fin).ToShortDateString() : "";}
+            @dateFin
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Admin)
+        </td>
+        <td>
+            @Html.ActionLink("Modifier", "EditProjet", new { id=item.Id }, new { @class = "btn btn-primary btn-sm" })
+        </td>
+    </tr>
+}
+
+</table>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>

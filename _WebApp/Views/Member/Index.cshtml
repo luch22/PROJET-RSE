@@ -1,0 +1,145 @@
+﻿@using Client.Models
+@using _WebApp.Infrastructure
+@model _WebApp.Models.ViewModels.MemberIndex
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="list-group">
+    <h2>Projet(s)</h2>
+    <table class="table hovercolorblue">
+        <tr class="info">
+            <th>
+                @Html.DisplayNameFor(model => model.p.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.p.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.p.Debut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.p.Fin)
+            </th>
+        </tr>
+        @foreach (var item in Model.ListP) {
+            <tr onclick="location.href='@Url.Action("Projet", "Projet", new { id = item.Id })'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @item.Debut.ToShortDateString()
+                </td>
+                <td>
+                    @{var dateFin = item.Fin != null ? ((DateTime)item.Fin).ToShortDateString() : "";}
+                    @dateFin
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+
+    <h2>Membre(s) d'équipe</h2>
+    <table class="table hovercolorblue">
+        <tr class="info">
+            <th>
+                @Html.DisplayNameFor(model => model.e.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.e.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.e.Birthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.e.Tel)
+            </th>
+        </tr>
+
+        @foreach (var item in Model.ListE) {
+            if (item.Id == Model.e.Id) {
+
+                <tr id="leboss" onclick="location.href='@Url.Action("Employee", new { id = item.Id })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)  @Html.DisplayFor(modelItem => item.Prenom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Birthday)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tel)
+                    </td>
+                </tr>
+            }
+            else {
+                <tr onclick="location.href='@Url.Action("Employee", new { id = item.Id })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)  @Html.DisplayFor(modelItem => item.Prenom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Birthday)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tel)
+                    </td>
+                </tr>
+            }
+        }
+
+</table>
+<div class="list-group">
+    <h2>Discussion(s)</h2> 
+    <div class="autocomplete" style="width:300px;">
+        <input id="searchEmp" type="text" name="searchEmp" placeholder="Search..">
+    </div>
+    <table class="table hovercolorgreen">
+        <tr class="success">
+            <th>
+                Employé
+            </th>
+            <th>
+                Dernier message
+            </th>
+        </tr>
+
+        @foreach (var item in Model.ListEWDiscussion) {
+            <tr onclick="location.href='@Url.Action("Employee", new {id = item.Id})'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prenom) @Html.DisplayFor(modelItem => item.Nom)
+                </td>
+                <td>
+                    @{
+                        MessageEmployee message = Model.ListME
+                            .Where(r => (r.Id_Destinataire == item.Id && r.Id_Employee == EmployeeSession.CurrentEmployee.Id)
+                                        ||(r.Id_Employee == item.Id && r.Id_Destinataire == EmployeeSession.CurrentEmployee.Id))
+                            .OrderBy(r => r.Date)
+                            .LastOrDefault();
+                    }
+                    
+                    @if (message != null)
+                    {
+                        @message.Contenu;
+                    }
+                    else
+                    {
+                        <span> Vous n'avez aucun messages !</span>
+                    }
+                </td>
+            </tr>
+         }
+    </table>
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/Scripts/SearchEmployee.js"></script>
+}

@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Client.Models.MessageProjet>
+@using _WebApp.Infrastructure
+
+@{
+    ViewBag.Title = "MessageProjet";
+}
+
+<h2>MessageProjet</h2>
+
+@{
+    int? pr = null;
+    string titr = Model.FirstOrDefault()?.Titre;
+ }
+<div class="divmessage">
+    @{string lastauteur = ""; }
+    @foreach (var item in Model) {
+        <div>
+            @if (item.Id_Employee == EmployeeSession.CurrentEmployee.Id) {
+                <text>
+                <div class="messmoi">
+                    @if (lastauteur != item.Auteur) {
+                        <span class="nommess">@Html.DisplayFor(modelItem => item.Auteur)</span>
+                    }
+                    <span class="datemess">@item.Date.ToString("dd MMMM yyyy, HH:mm")</span>
+                </div>
+                </text>
+            }
+            else {
+                <text>
+                <div class="messemp">
+                    @if (lastauteur != item.Auteur) {
+                        <span class="nommess">@Html.DisplayFor(modelItem => item.Auteur)</span>
+                    }
+                    <span class="datemess">@item.Date.ToString("dd MMMM yyyy, HH:mm")</span>
+                </div>
+                </text>
+            }
+            <div>@Html.DisplayFor(modelItem => item.Contenu)</div>
+            <br />
+        </div>
+        lastauteur = item.Auteur;
+    }
+    @{ pr = Model.FirstOrDefault()?.Id_Projet;}
+    
+
+</div>
+
+<br class="clearboth" />
+<div class="divmessage">
+    <form action="~/Message/RepondreProjet" method="post">
+        <input type="hidden" name="titr" id="titr" value='@titr'/>
+        <input type="hidden" name="idPr" id="idPr" value='@pr'/>
+        <input type="hidden" name="idMsg" id="idMsg" value='@Model.First().Id'/>
+        <textarea name="msg" id="msg" class="te" maxlength="4000" placeholder="Entrez votre messages ici !"></textarea>
+        @*<input class="champtext" type="text" size="4000" name="msg" id="msg" />*@
+        <input class="btn btn-success" type="submit" name="Envoyer" value="Envoyez"/>
+    </form>
+</div>
+
+@Html.ActionLink("Retour","Projet","Projet",null,new{ @class="btn btn-danger"})

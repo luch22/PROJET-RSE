@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Client.Models.MessageEquipe>
+@using _WebApp.Infrastructure
+
+@{
+    ViewBag.Title = "MessageEquipe";
+}
+
+<h2>MessageEquipe</h2>
+    @{
+        int? eq = null;
+        string titr = Model.FirstOrDefault()?.Titre;
+        int? idMsg = 0;
+    }
+<div class="divmessage">
+
+    @foreach (var item in Model)
+    {
+        <div class="divpostunique">
+            @if (item.Id_Employee == EmployeeSession.CurrentEmployee.Id) {
+                <text>
+                    <div style="background-color: #00bc8c">@Html.DisplayFor(modelItem => item.Auteur)</div>
+                </text>
+            }
+            else {
+                <text>
+                    <div style="background-color: #808080">@Html.DisplayFor(modelItem => item.Auteur)</div>
+                </text>
+            }
+            <div class="Date">@Html.DisplayFor(modelItem => item.Date)</div>
+            <div class="Contenu">@Html.DisplayFor(modelItem => item.Contenu)</div>
+            <br class="clearboth" />
+        </div>
+    }
+    
+    @if (Model != null && Model.Any())
+    {
+        eq = Model.FirstOrDefault().Id_Equipe;
+        idMsg = Model.FirstOrDefault().Id;
+    }
+
+</div>
+
+<div class="divmessage">
+    <form action="~/Message/RepondreEquipe" method="post">
+        <input type="hidden" name="titr" id="titr" value='@titr' />
+        <input type="hidden" name="idEq" id="idEq" value='@eq' />
+        <input type="hidden" name="idMsg" id="idMsg" value='@idMsg' />
+        <textarea name="msg" id="msg" class="champtext" maxlength="4000" placeholder="Entrez votre messages ici !"></textarea>
+        @*<input class="champtext" type="text" size="4000" name="msg" id="msg" />*@
+        <input class="btn btn-success" type="submit" name="Envoyer" value="Envoyez" />
+    </form>
+</div>
+
+@Html.ActionLink("Retour","Equipe","Equipe",null,new{ @class="btn btn-danger"})

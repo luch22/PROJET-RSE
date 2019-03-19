@@ -1,0 +1,158 @@
+﻿@using Client.Models
+@model _WebApp.Models.ViewModels.MemberEquipe
+
+@{
+    ViewBag.Title = "Equipe";
+}
+
+<h2>Détails Équipe</h2>
+
+@if (Model.eq != null && Model.emp != null) {
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.eq.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.eq.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.eq.Creee)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.eq.Creee)
+            </dd>
+
+            <dt>
+                Chef de projet associé
+            </dt>
+
+            <dd id="lienEmp" onclick="location.href='@Url.Action("Employee", "Member", new { id = Model.emp.Id })'">
+                @Html.DisplayFor(model => model.emp.Nom) @Html.DisplayFor(model => model.emp.Prenom)
+            </dd>
+        </dl>
+    </div>
+
+    <div class="list-group">
+        <h2>Employé(s)</h2>
+        <table class="table hovercolorblue">
+            <tr class="info">
+                <th>
+                    @Html.DisplayNameFor(model => model.emp.Nom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.emp.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.emp.Tel)
+                </th>
+            </tr>
+
+            @foreach (var item in Model.ListE) {
+                <tr onclick="location.href='@Url.Action("Employee", "Member", new { id = item.Id })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom) @Html.DisplayFor(modelItem => item.Prenom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tel)
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+
+    <div class="list_message">
+        <h2>Sujet(s) d'équipe</h2>
+        <p>
+            @Html.ActionLink("Nouveau sujet", "CreateSujetEquipe", "Message", new { id = Model.eq.Id }, new { @class = "btn btn-success" })
+        </p>
+        <table class="table hovercolorgreen">
+            <tr class="success">
+                <th>
+                    @Html.DisplayNameFor(model => model.msgeq.Titre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.msgeq.Auteur)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.msgeq.Date)
+                </th>
+            </tr>
+            @foreach (var item in Model.ListMEq) {
+                <tr onclick="location.href='@Url.Action("MessageEquipe", "Message", new { id = item.Id}, null)'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Titre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Auteur)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                </tr>
+            }
+        </table>
+    
+    </div>
+
+    <div class="list-group">
+        <h2 class="menumilieu">Documents</h2>
+        <p>
+            @Html.ActionLink("Upload Document", "Upload", "FileManager", new { type = "equipe", id = Model.eq.Id }, new { @class = "btn btn-warning" })
+        </p>
+        <table class="table hovercoloryellow">
+            <tr class="warning">
+                <th >
+                    @Html.DisplayNameFor(model => model.d.Nom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.d.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.d.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.d.Taille)
+                </th>
+            </tr>
+
+            @foreach (var item in Model.ListD) {
+                <tr onclick="location.href='@Url.Action("Download", "FileManager", new { id = item.Id }, null)'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @if (item.Taille < 1024) {
+                            var taille = (float)item.Taille / 1024;
+                            var text = taille.ToString("0.00") + " Ko";
+                            @text
+                        }
+                        else {
+                            var taille = (float)item.Taille / (1024 * 1024);
+                            var text = taille.ToString("0.00") + " Mo";
+                            @text
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+}
+else {
+    <p>Vous n'êtes actuellement dans aucune équipe</p>
+}

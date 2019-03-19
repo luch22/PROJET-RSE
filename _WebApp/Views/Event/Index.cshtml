@@ -1,0 +1,92 @@
+﻿@using _WebApp.Areas.Admin.Infrastructure
+@using _WebApp.Infrastructure
+@model IEnumerable<Client.Models.Event>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Nouvel Event", "CreateEvent", null, new { @class = "btn btn-success" })
+</p>
+<div class="list-group">
+    <table class="table hovercolorblue">
+        <tr class="list-group info">
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Date de début
+            </th>
+            <th>
+                Date de fin
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullDay)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="list-group" onclick="location.href='@Url.Action("DetailsEvent", new {id = item.Id})'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateDebut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateFin)
+                </td>
+                <td>
+                    @{
+                        if (checked(item.FullDay))
+                        {
+                            <span id="V">✔️</span>
+                        }
+                        else
+                        {
+                            <span id="X">❌</span>
+                        }
+                    }
+
+                </td>
+                <td>
+                    @if (item.Id_Employee == EmployeeSession.CurrentEmployee.Id || (AdminSession.CurrentAdmin != null && AdminSession.CurrentAdmin.Id != null))
+                    {
+                        @Html.ActionLink("Modifier", "EditEvent", new { id = item.Id }, new { @class = "btn btn-primary btn-sm" })
+                        <input class="btn btn-danger btn-sm" onclick="del(this,@item.Id)" value="Supprimer" />
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<script type="text/javascript">
+    function del(ele,idev) {
+        if (confirm("Etes-vous certain de vouloir supprimer cet événement ?")) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("DeleteEvent")" + "/"+idev,
+                success: function () {
+                    ele.parent.parent.setAttribute("hidden", true)
+                    alert("Événement supprimer avec succés");
+                },
+                error: function (xhr, status, error) {
+                    alert("L'événement n'a pas été supprimer!");
+                }
+            });
+        }
+    }
+</script>

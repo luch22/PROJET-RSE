@@ -1,0 +1,153 @@
+﻿@model _WebApp.Areas.Admin.Models.ViewModels.AdminEmployee
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Employée";
+}
+
+<h2>Employé(s)</h2>
+
+@using (Html.BeginForm()) {
+    <p>
+        <span>Search:</span> @Html.TextBox("search")
+        <input class="btn btn-info" type="submit" value="Search" />
+    </p>
+}
+<table class="table hovercolorblue">
+    <tr class="info">
+        <th>
+            @Html.DisplayNameFor(model => model.e.Nom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.e.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.e.Birthday)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.e.HireDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.e.Tel)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.e.Actif)
+        </th>
+        <th>
+            Département
+        </th>
+    </tr>
+
+    @foreach (var item in Model.listE) {
+        <tr onclick="location.href='@Url.Action("DetailsEmployee", new { id = item.Item1.Id })'">
+            <td>
+                @Html.DisplayFor(modelItem => item.Item1.Nom) @Html.DisplayFor(modelItem => item.Item1.Prenom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item1.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item1.Birthday)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item1.HireDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item1.Tel)
+            </td>
+            @if (item.Item1.Actif == true) {
+                <td onclick="event.cancelBubble = true;">
+                    <span class="label label-success" onclick="del(this,@item.Item1.Id)">Actif</span>
+                </td>
+            }
+            else {
+                <td onclick="event.cancelBubble = true;">
+                    <span id="champactif" class="label label-danger" onclick="check(this, @item.Item1.Id)">Désactivé</span>
+                </td>
+            }
+            <td onclick="event.cancelBubble = true;">
+                <select class="form-control" onchange="changeDep(@item.Item1.Id, this.options[this.selectedIndex].value) ">
+                    <option class="text-info" value="0">Aucun</option>
+                    @foreach (var item2 in Model.listD) {
+                        if (item.Item2 != null && item.Item2.Id == item2.Id) {
+                            <option class="text-info" selected value="@item2.Id">@item2.Nom</option>
+                        }
+                        else {
+                            <option class="text-info" value="@item2.Id">@item2.Nom</option>
+                        }
+                    }
+                </select>
+            </td>
+        </tr>
+    }
+    <tr class="hovernocolor">
+        <td colspan="4">
+        Page @(Model.listE.PageCount < Model.listE.PageNumber ? 0 : Model.listE.PageNumber) of @Model.listE.PageCount
+        @Html.PagedListPager(Model.listE, page => Url.Action("Employee", "Employee", new { page, currentFilter = ViewBag.CurrentFilter }), new PagedListRenderOptions { LiElementClasses = new string[] { "page-item" } })
+
+        </td>
+        <td colspan="2">
+            <div class="dropdown">
+                <a class="dropdown-toggle btn btn-info"  data-toggle="dropdown" aria-expanded="false">
+                Éléments / page <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li onclick="location.href='@Url.Action("Employee", "Employee", new { currentFilter = ViewBag.CurrentFilter, size = 10 })'">10</li>
+                    <li onclick="location.href='@Url.Action("Employee", "Employee", new { currentFilter = ViewBag.CurrentFilter, size = 25 })'">25</li>
+                    <li onclick="location.href='@Url.Action("Employee", "Employee", new { currentFilter = ViewBag.CurrentFilter, size = 50 })'">50</li>
+                    <li onclick="location.href='@Url.Action("Employee", "Employee", new { currentFilter = ViewBag.CurrentFilter, size = 100 })'">100</li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>
+
+<script type="text/javascript">
+    function check(ele, idemp) {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ActiveEmployee")" + "/"+idemp,
+            success: function () {
+                ele.setAttribute("class", "label label-success");
+                ele.innerHTML = "Actif";
+                ele.setAttribute("onclick", "del(this," + idemp + ")");
+                alert("Employé activer avec succés");
+            },
+            error: function (xhr, status, error) {
+                alert("L'employé n'a pas été mis a jour!");
+            }
+        });
+    }
+    function del(ele, idemp) {
+        if (confirm("Etes-vous certain de vouloir supprimer cet employé ?")) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("DeleteEmployee")" + "/"+idemp,
+                success: function () {
+                    ele.setAttribute("class", "label label-danger");
+                    ele.innerHTML = "Désactivé";
+                    ele.setAttribute("onclick", "check(this," + idemp + ")");
+                    alert("Employé désactivé avec succés");
+                },
+                error: function (xhr, status, error) {
+                    alert("L'employé n'a pas été mis a jour!");
+                }
+            });
+        }
+    }
+    function changeDep(idemp, iddep){
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ChangerDep")" + "/?idemp="+idemp+"&iddep="+iddep,
+            success: function () {
+                alert("Département changer avec succés");
+            },
+            error: function (xhr, status, error) {
+                alert("Le département n'a pas été changer!");
+            }
+        });
+    }
+</script>

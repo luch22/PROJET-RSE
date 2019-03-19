@@ -1,0 +1,134 @@
+﻿@model _WebApp.Models.ViewModels.MemberDiscussion
+
+@{
+    ViewBag.Title = "Details Employé";
+}
+
+<h2>Details Employé</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.employee.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.employee.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.employee.Prenom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.employee.Prenom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.employee.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.employee.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.employee.Birthday)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.employee.Birthday)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.employee.Tel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.employee.Tel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.adresse.Nom_Rue)
+        </dt>
+
+        <dd onclick="window.open('@Url.Action("RechercheVille", "Event", new {lieu = Model.adresse.Id})')">
+            <span id="lienEmp">@Html.DisplayFor(model => model.adresse.Nom_Rue), @Html.DisplayFor(m => m.adresse.Numero)</span>
+        </dd>
+        @if (Model.adresse.Boite_Postal != null) { 
+        <dt>
+            @Html.DisplayNameFor(model => model.adresse.Boite_Postal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.adresse.Boite_Postal)
+        </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.ville.Zip)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ville.Zip)
+        </dd>
+
+        <dt>
+            Ville@*Html.DisplayNameFor(model => model.ville.Nom)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ville.Nom)
+        </dd>
+    </dl>
+</div>
+
+<div class="myborder">
+    <table class="table">
+        @{int? dern = null;}
+        @{int? emp = Model.employee.Id;}
+        @foreach (var item in Model.ListeMessageEmployees)
+        {
+            if (item.Id_Destinataire == emp)
+            {
+                <tr class="bkmess">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Contenu)
+                    </td>
+                    <td  class="borderall">
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr class="bkmess2">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Contenu)
+                    </td>
+                    <td class="borderall">
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                </tr>
+            }
+            dern = item.Id;
+        }
+    </table>
+</div>
+<br class="clearboth" />
+<div>
+    <form action="~/Message/RepondreEmployee" method="post">
+        <input type="hidden" name="idDest" id="idDest" value='@emp' />
+        <input type="hidden" name="idMsg" id="idMsg" value='@dern' />
+        <div class="form-group">
+            <label class="control-label" for="msg">Message</label>
+            <br class="clearboth" />
+            <textarea class="form-control input-lg MGS" type="text" name="msg" id="msg" maxlength="4000"></textarea>
+            <input class="btn btn-success MGS2" type="submit" name="Envoyer" value="Envoyez" />
+        </div>
+    </form>
+</div>
+<br class="clearboth"/>
+<br />
+
+@Html.ActionLink("Retour","Index","Member",null,new{ @class="btn btn-danger"})

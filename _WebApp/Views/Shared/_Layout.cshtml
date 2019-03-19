@@ -1,0 +1,81 @@
+﻿@using _WebApp.Infrastructure
+@using _WebApp.Areas.Admin.Infrastructure
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MEMBER AREA
+    </title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    </head>
+<body class="body-content">
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("RSE", "Index", "Member", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Projet", "Projet", "Projet")</li>
+                <li>@Html.ActionLink("Equipe", "Equipe", "Equipe")</li>
+                <li>@Html.ActionLink("Planning", "Index", "Planning")</li>
+                <li>@Html.ActionLink("Evénement", "Index", "Event")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li id="liNotifs" class="active" style="display: none">
+                    <div>
+                        <div id="aNotifs">
+                            <div>
+                                <img id="cloche" src="~/Content/iconBell.png" />
+                                <span id="spanNotifs" class="badge"> </span>
+                            </div>
+                        </div>
+                        <div id="notifications">
+                            <span id="nonotifs" style="display: none">Il n'y a aucune nouvelles notifications.</span>
+                        </div>
+                    </div>
+                </li>
+                @if (AdminSession.CurrentAdmin != null && (AdminSession.CurrentAdmin.Id != null || AdminSession.CurrentAdmin.Id != 0)) {
+                    <li class="text-right">@Html.ActionLink("Admin", "Index", "Admin", new { area = "Admin"}, null)</li>
+                }
+                @if (EmployeeSession.CurrentEmployee != null && (EmployeeSession.CurrentEmployee.Id != null || EmployeeSession.CurrentEmployee.Id != 0)) {
+                    <li class="text-right">@Html.ActionLink("Profil", "Index", "Profile")</li>
+                    <li class="text-right"><span class = "btn-danger btn logout" >@Html.ActionLink("Logout", "Logout", "Auth")</span></li>
+                }
+                else{ 
+                    <li class="text-right">@Html.ActionLink("Inscription","Register","Auth")</li>
+                    <li class="text-right"> <span class="btn btn-info login">@Html.ActionLink("Login", "Login", "Auth")</span></li>
+                }
+            </ul>
+        </div>       
+    </div>
+</div>
+<div class="container body-content">
+    @RenderBody()
+    <hr />
+    <footer>
+       
+        <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+    </footer>
+</div>
+   
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+<script src="~/Scripts/lib/moment.min.js"></script>
+@*<script src="~/Scripts/snowstorm.js"></script>*@
+@if (EmployeeSession.CurrentEmployee != null && (EmployeeSession.CurrentEmployee.Id != null || EmployeeSession.CurrentEmployee.Id != 0)) {
+    <script src="~/Scripts/Notification.js"></script>
+}
+</body>
+
+</html>

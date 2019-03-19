@@ -1,0 +1,54 @@
+﻿@using _WebApp.Areas.Admin.Infrastructure
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - ADMIN AREA</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="body-content">
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Member", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Departement", "Index", "Admin", new { area = "Admin" }, null)</li>
+                <li>@Html.ActionLink("Projet", "Projet", "Projet", new { area = "Admin" }, null)</li>
+                <li>@Html.ActionLink("Equipe", "Equipe", "Equipe", new { area = "Admin" }, null)</li>
+                <li>@Html.ActionLink("Employee", "Employee", "Employee", new { area = "Admin" }, null)</li>
+                <li>@Html.ActionLink("Evénement", "Index", "Event", new { area = "" }, null)</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                @if (AdminSession.CurrentAdmin != null && (AdminSession.CurrentAdmin.Id != null || AdminSession.CurrentAdmin.Id != 0)) {
+                    <li class="text-right">@Html.ActionLink("Profil", "Index", "Profile", new { area = "" }, null)</li>
+                    <li class="text-right"><span class="btn btn-danger logout"> @Html.ActionLink("Logout", "Logout", "Auth", new { area = "" }, null)</span></li>
+                }
+                else {
+                    <li class="text-right"><span class="btn btn-info login">@Html.ActionLink("Login", "Login", "Auth", new { area = "" }, null)</span></li> }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container body-content">
+    @RenderBody()
+    <hr />
+    <footer>
+        <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+    </footer>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Basic File Upload</h2>
+<div style="width:600px;">
+    @using (Ajax.BeginForm("Upload", "FileManager", new AjaxOptions() { HttpMethod = "POST" }, new { enctype = "multipart/form-data" })) {
+        @Html.AntiForgeryToken()
+        <label for="file">Choisissez un fichier:</label>
+        <input type="hidden" name="type" value="@ViewBag.Type" />
+        <input type="hidden" name="id" value="@ViewBag.Id" />
+        <div class="filewrapper">
+            <input type="file" name="file" id="file" /><br>
+            <label for="des">Description:</label>
+            <input type="text" name="des" />
+        </div>
+        <br />
+        <input id="btnsubmit" class="btn btn-info" type="submit" value="Upload File" />
+        <br />
+        <br />
+        @ViewBag.Message
+        <br />
+        <br />
+    }
+</div>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>
+
+@section scripts{
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('#file').on('change', function (evt) {
+    //        if (this.files[0].size > 26214400) {
+    //            document.getElementById("btnsubmit").hidden = true;
+    //            alert("La taille du fichier ne doit pas exceder 25mb !");
+    //        }
+    //        else {
+    //            document.getElementById("btnsubmit").hidden = false;
+    //        }
+    //    });
+    //});
+</script>
+}

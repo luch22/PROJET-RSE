@@ -1,0 +1,142 @@
+﻿@model _WebApp.Areas.Admin.Models.ViewModels.AdminProjet
+@using _WebApp.Areas.Admin.Infrastructure
+
+@{
+    ViewBag.Title = "DetailsProjet";
+}
+
+<div class="detproj">
+    <h2>Détails du Projet</h2>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.p.Nom)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.p.Nom)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.p.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.p.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.p.Debut)
+            </dt>
+            <dd>
+                @Model.p.Debut.ToShortDateString()
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.p.Fin)
+            </dt>
+            <dd>
+                @{var dateFin = Model.p.Fin != null ? ((DateTime)Model.p.Fin).ToShortDateString() : "";}
+                @dateFin
+            </dd>
+            <dt>
+                Manager
+            </dt>
+            <dd id="lienEmp" onclick="location.href='@Url.Action("Employee", "Member", new { area = "", id = Model.e.Id})'">
+                @Html.DisplayFor(model => model.e.Nom) @Html.DisplayFor(model => model.e.Prenom)
+            </dd>
+        </dl>
+
+        <div class="list-group">
+            <h2>Tâche(s) d'équipe</h2>
+            @if (AdminSession.CurrentAdmin != null) {
+            <p>
+                @Html.ActionLink("Créer une nouvelle tâche", "CreateTask", "Task", new { idProj = Model.p.Id, area = "Admin"}, new { @class = "btn btn-info" })
+            </p>
+            }
+            <table class="table hovercolorblue">
+                <tr class="info">
+                    <th>
+                        @Html.DisplayNameFor(model => model.te.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.te.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.te.Debut)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.te.Fin)
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.ListTask) {
+                    <tr onclick="location.href='@Url.Action("TacheEquipe", "Tache", new { area = "", id = item.Id})'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @item.Debut.ToShortDateString()
+                        </td>
+                        <td>
+                            @{var dateFin2 = item.Fin != null ? ((DateTime)item.Fin).ToShortDateString() : "";}
+                            @dateFin2
+                        </td>
+                        @if (AdminSession.CurrentAdmin != null) {
+                            <td>
+                                @Html.ActionLink("Tâche suivante", "CreateTask", "Task", new { idProj = item.Projet, idTask = item.Id, area = "Admin" }, new { @class="btn btn-info"})
+                            </td>
+                        }
+                        
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div class="list-group">
+            <h2>Équipe(s) du projet</h2>
+            @if (AdminSession.CurrentAdmin != null) {
+                <p>
+                    @Html.ActionLink("Affecter une/des équipe(s) au projet", "AffecterEquipeProj", new { idProj = Model.p.Id, area = "Admin" }, new { @class = "btn btn-info" })
+                </p>
+            }
+            <table class="table hovercolorblue">
+                <tr class="info">
+                    <th>
+                        @Html.DisplayNameFor(model => model.eq.Nom)
+                    </th>
+                    <th>
+                        Date de création
+                    </th>
+                    <th>
+                        Employé(s)
+                    </th>
+                </tr>
+                @if (Model.ListEqEmp != null && Model.ListEqEmp.Any()) {
+                    foreach (var item in Model.ListEqEmp) {
+                        <tr onclick="location.href='@Url.Action("DetailsEquipe", "Equipe", new { id = item.Key.Id})'">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Key.Nom)
+                            </td>
+                            <td>
+                                @item.Key.Creee.ToShortDateString()
+                            </td>
+                            <td>
+                                @if (item.Key != null && item.Value != null) {
+                                    foreach (var item2 in item.Value) {
+                                        if (item2 != null) {
+                                            @Html.ActionLink(Html.DisplayFor(modelItem => item2.Nom).ToString() + " " + Html.DisplayFor(modelItem => item2.Prenom).ToString() + ", ", "DetailsEmployee", "Employee", new { id = item2.Id }, null);
+                                        }
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>

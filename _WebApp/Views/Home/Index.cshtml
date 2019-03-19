@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    <table class="table table-index" >
+        <tr>
+            <td class="td-index">
+                <div class="fright">@Html.ActionLink("Login", "Login", "Auth", null, new { @class = "btn btn-success" })</div>
+                <div class="fleft">@Html.ActionLink("Inscription", "Register", "Auth", null, new { @class = "btn btn-info" })</div> 
+            </td>
+        </tr>
+    </table>
+</div>
+

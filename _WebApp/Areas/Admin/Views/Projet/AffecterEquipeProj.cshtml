@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Client.Models.Equipe>
+
+@{
+    ViewBag.Title = "AffecterEquipeProj";
+}
+
+<h2>AffecterEquipeProj</h2>
+
+<div>
+    @if (Model != null && Model.Any()) {
+        <form action="~/Admin/Admin/AffecterEquipeProj" method="post">
+            <div class="list-group">
+                <h2>Autre équipe</h2>
+                <table class="table table-striped table-hover ">
+                    <tr class="info">
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().Nom)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().Creee)
+                        </th>
+                        <th>
+                            Affecter
+                        </th>
+                    </tr>
+                    @if (Model != null && Model.Any()) {
+                        foreach (var item in Model) {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nom)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Creee)
+                                </td>
+                                <td>
+                                    <input type="checkbox" name='@item.Id' value="0" id='@item.Id' />
+                                </td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+            <input type="hidden" name="idProj" value='@Model.First().Projet' />
+            <input class="btn btn-info" type="submit" value="Affecter" />
+        </form>
+    }
+    else {
+        <span>Il n'y a pas d'autre équipes!</span>
+    }
+</div>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>

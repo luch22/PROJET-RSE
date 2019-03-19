@@ -1,0 +1,165 @@
+﻿@using _WebApp.Infrastructure
+@model _WebApp.Models.ViewModels.EventEmployee
+
+@{
+    ViewBag.Title = "DetailsEvent";
+}
+
+<h2>Détails de l'évenement</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal"></dl>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Eve.Nom)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Eve.Nom)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Eve.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Eve.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Eve.Lieu)
+            </dt>
+            <dd>
+                <span onclick="window.open('@Url.Action("RechercheVille", "Event", new { lieu = Model.Eve.Lieu })')" id="lienEmp" >@Html.DisplayFor(model => Model.EventAdresse.Adresse.Nom_Rue),@Html.DisplayFor(model => Model.EventAdresse.Adresse.Numero) - @Html.DisplayFor(model => Model.EventAdresse.Ville.Nom) @Html.DisplayFor(model => Model.EventAdresse.Ville.Zip)</span>
+            </dd>
+            <dt>
+                Date de début
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Eve.DateDebut)
+            </dd>
+            <dt>
+                Date de fin
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Eve.DateFin)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Eve.FullDay)
+            </dt>
+            <dd>
+                @{
+                    if (checked(Model.Eve.FullDay))
+                    {
+                        <span id="V">✔️</span>
+                    }
+                    else
+                    {
+                        <span id="X">❌</span>
+                    }
+                }
+            </dd>
+            <dt>
+                Créateur
+            </dt>
+            <dd>
+                <span id="lienEmp" onclick="location.href='@Url.Action("Employee", "Member", new { id = Model.Employee.Id})'">
+                    @Html.DisplayFor(model => model.Employee.Nom) @Html.DisplayFor(model => model.Employee.Prenom)
+                </span>
+            </dd>
+        </dl>
+    </div>
+    <h4>Participant(s):</h4>
+    <table class="table hovercolorblue">
+        <tr class="info list-group">
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee.Adresse)
+            </th>
+        </tr>
+        @if (Model.ListEmp != null && Model.ListEmp.Any())
+        {
+            foreach (var item in Model.ListEmp)
+            {
+                <tr id="@item.Employee.Id" onclick="location.href='@Url.Action("Employee", "Member", new { id = item.Employee.Id})'">
+                    <td>
+                        <span> @Html.DisplayFor(modelItem => item.Employee.Nom) @Html.DisplayFor(modelItem => item.Employee.Prenom)</span>
+                        <br />
+                    </td>
+                    <td>
+                        <span>@Html.DisplayFor(modelItem => item.Employee.Email)</span>
+                        <br />
+                    </td>
+                    <td id="lienEmp2" target="_blank" onclick="event.cancelBubble = true">
+                        <span>
+                            <a target="_blank" href='@Url.Action("RechercheVille", "Event", new {lieu = Model.Eve.Lieu})'>@Html.DisplayFor(modelItem => item.Adresse.Nom_Rue), @Html.DisplayFor(modelItem => item.Ville.Nom) @Html.DisplayFor(modelItem => item.Ville.Zip)</a>
+                        </span>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<p>
+
+    @if (Model.ListEmp != null && Model.ListEmp.Any(r => r.Employee.Id != null && (int)r.Employee.Id == EmployeeSession.CurrentEmployee.Id))
+    {
+        <a id="btnparticipe" class="btn btn-warning" onclick="participePlus(@EmployeeSession.CurrentEmployee.Id,@Model.Eve.Id)">Je ne participe plus</a>
+        @*Html.ActionLink("Je ne participe plus", "ParticipeEvent", new {idEp = EmployeeSession.CurrentEmployee.Id, idEv = Model.Eve.Id}, new { @class = "btn btn-warning"})*@
+    }
+    else
+    {
+        <a id="btnparticipe" class="btn btn-success" onclick="participe(@EmployeeSession.CurrentEmployee.Id,@Model.Eve.Id);window.location.reload();">Je participe</a>
+        @*Html.ActionLink("Je participe", "ParticipeEvent", new {idEp = EmployeeSession.CurrentEmployee.Id, idEv = Model.Eve.Id}, new { @class = "btn btn-success" })*@
+    }
+    @Html.ActionLink("Editer", "EditEvent", new { id = Model.Eve.Id }, new { @class = "btn btn-info" })
+</p>
+
+@Html.ActionLink("Retour", "Index", "Event", null, new { @class = "btn btn-success" })
+
+@section scripts{
+    <script type="text/javascript">
+        function participePlus(idemp, idev) {
+            if (confirm('Êtes-vous sûr de vouloir ne plus participer à cet évenement?')) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("ParticipeEvent")/?idEp=" + idemp + "&idEv=" + idev,
+                    success: function () {
+                        var elem = document.getElementById("btnparticipe");
+                        elem.setAttribute("class", "btn btn-success");
+                        elem.innerHTML = "Je participe";
+                        elem.setAttribute("onclick", "participe(@EmployeeSession.CurrentEmployee.Id,@Model.Eve.Id)");
+                        var elem2 = document.getElementById(@EmployeeSession.CurrentEmployee.Id);
+                        elem2.hidden = true;
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        function participe(idemp, idev) {
+            if (confirm('Êtes-vous sûr de vouloir participer à cet évenement?')) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("ParticipeEvent")/?idEp=" + idemp + "&idEv=" + idev,
+                    success: function () {
+                        var elem = document.getElementById("btnparticipe");
+                        elem.setAttribute("class", "btn btn-warning");
+                        elem.innerHTML = "Je ne participe plus";
+                        elem.setAttribute("onclick", "participePlus(@EmployeeSession.CurrentEmployee.Id,@Model.Eve.Id)");
+                        if (document.getElementById(@EmployeeSession.CurrentEmployee.Id) != null)
+                            document.getElementById(@EmployeeSession.CurrentEmployee.Id).hidden = false;
+                    },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                });
+            }
+        }
+    </script>
+}

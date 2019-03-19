@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Client.Models.MessageTache>
+@using _WebApp.Infrastructure
+
+@{
+    ViewBag.Title = "MessageTacheEquipe";
+}
+
+<h2>MessageTacheEquipe</h2>
+
+    @{
+     
+        string titr = Model.FirstOrDefault()?.Titre;
+    }
+    <div class="divmessage">
+
+        @foreach (var item in Model)
+        {
+            <div >
+                @if (item.Id_Employee == EmployeeSession.CurrentEmployee.Id) {
+                    <text>
+                        <div style="background-color: #00bc8c">@Html.DisplayFor(modelItem => item.Auteur)</div>
+                    </text>
+                }
+                else {
+                    <text>
+                        <div style="background-color: #808080">@Html.DisplayFor(modelItem => item.Auteur)</div>
+                    </text>
+                }
+                <div>@Html.DisplayFor(modelItem => item.Date)</div>
+                <div>@Html.DisplayFor(modelItem => item.Contenu)</div>
+                <br />
+            </div>
+        }
+   
+        @{int? ta = Model.FirstOrDefault()?.Id_Tache_Equipe;}
+        
+
+    </div>
+<div>
+    <form action="~/Message/RepondreTacheEquipe" method="post">
+        <input type="hidden" name="titr" id="titr" value='@titr'/>
+        <input type="hidden" name="idTa" id="idTa" value='@ta'/>
+        <input type="hidden" name="idMsg" id="idMsg" value='@Model.First().Id;'/>
+        <input class="text-info glyphicon-text-background text-nowrap" type="text" name="msg" id="msg"/>
+        <input class="btn btn-success" type="submit" name="Envoyer" value="Envoyez"/>
+    </form>
+</div>
+
+@Html.ActionLink("Retour","TacheEquipe","TAche",new{ id = ta },new{ @class="btn btn-danger"})

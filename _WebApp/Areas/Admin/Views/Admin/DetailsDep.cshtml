@@ -1,0 +1,138 @@
+﻿@model _WebApp.Areas.Admin.Models.ViewModels.AdminDep
+@using Client.Models;
+
+@{
+    ViewBag.Title = "DetailsDep";
+}
+
+<div class="detproj">
+    <h2>Détails Departement</h2>
+    <div>
+        <dl class="dl-horizontal">-
+            <dt>
+                @Html.DisplayNameFor(model => model.dep.Nom)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.dep.Nom)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.dep.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.dep.Description)
+            </dd>
+        </dl>
+
+        <div class="list-group">
+            <h2>Employé(s) du département</h2>
+            <p>
+                @Html.ActionLink("Affecter un/des employé(s) au département", "AffecterEmployeeDep", new { idDep = Model.dep.Id }, new { @class = "btn btn-info" })
+            </p>
+            <table class="table hovercolorblue">
+                <tr class="info">
+                    <th>
+                        @Html.DisplayNameFor(model => model.e.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.e.Birthday)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.e.Email)
+                    </th>
+                    <th>
+                        Supprimer du département
+                    </th>
+                </tr>
+                @if (Model.ListEmpDep != null && Model.ListEmpDep.Any()) {
+                    foreach (var item in Model.ListEmpDep) {
+                        <tr onclick="location.href='@Url.Action("DetailsEmployee", "Employee", new { id = item.Id, area = "Admin" })'">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nom) @Html.DisplayFor(modelItem => item.Prenom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Birthday)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td onclick="event.cancelBubble = true;">
+                                <a class="btn btn-danger" onclick="removeEmp(@Model.dep.Id,@item.Id)">Supprimer</a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div>
+
+        <div class="list-group">
+            <h4 class="menumilieu">Documents</h4>
+            <p>
+                @Html.ActionLink("Upload Document", "Upload", "FileManager", new { area="", type = "dep", id = Model.dep.Id }, new { @class = "btn btn-warning" })
+            </p>
+            <table class="table hovercoloryellow">
+                <tr class="warning">
+                    <th>
+                        @Html.DisplayNameFor(model => model.doc.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.doc.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.doc.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.doc.Taille)
+                    </th>
+                </tr>
+
+                @foreach (var item in Model.ListD) {
+                    <tr onclick="location.href='@Url.Action("Download", "FileManager", new { id = item.Id })'">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @if (item.Taille < 1024) {
+                                var taille = (float)item.Taille / 1024;
+                                var text = taille.ToString("0.00") + " Ko";
+                                @text
+                            }
+                            else {
+                                var taille = (float)item.Taille / (1024 * 1024);
+                                var text = taille.ToString("0.00") + " Mo";
+                                @text
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-danger" href="javascript:void(0);" onclick="history.go(-1);">Retour</a>
+
+<script type="text/javascript">
+    function removeEmp(depid, empid) {
+        if (confirm("Etes-vous certain de vouloir enlever cet employé du département ?")) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SupprimerEmpDep", "Admin")"+"/",
+                data: "dep=" + depid + "&emp=" + empid,
+                success: function () {
+                    //
+                },
+                error: function (xhr, status, error) {
+                    alert("Le département n'a pas été mise à jour!");
+                }
+            });
+        }
+    }
+</script>
